@@ -127,7 +127,6 @@ begin
   begin
     FMemoryStream.WriteBuffer(buffer, ReadBytes);
     Inc(FCurrentReadBytes, ReadBytes);
-
     Label3.Caption := 'Read ' + IntToStr(FCurrentReadBytes div 1024) + 'KB ...';
   end
   else
@@ -290,7 +289,8 @@ begin
         gstUnknown: ImageIndex := 0;
       end;
     end;
-
+  if items > 0 then
+    ListView1.Items[0].MakeVisible(False);
 end;
 
 {
