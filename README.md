@@ -18,7 +18,6 @@ Oh well...there is a very long todo list... development has just started
 * add some credits window
 * better history handling
 * load/store settings, history
-* implement "Download to computer" functionality
 
 ## BUGS
 Many.... :)

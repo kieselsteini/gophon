@@ -29,6 +29,8 @@ type
     Port: word;
   end;
 
+  TUserAction = (uaViewSelector, uaDownloadSelector);
+
   { TForm1 }
 
   TForm1 = class(TForm)
@@ -49,7 +51,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure GopherUriEditChange(Sender: TObject);
-    procedure GopherUriEditKeyDown(Sender: TObject; var Key: Word;
+    procedure GopherUriEditKeyDown(Sender: TObject; var Key: word;
       Shift: TShiftState);
     procedure ListView1DblClick(Sender: TObject);
     procedure MenuItem1Click(Sender: TObject);
@@ -65,8 +67,10 @@ type
     FSelectorList: array[1..MaximumSelectors] of TGopherSelector;
     FSelectorHistory: array[1..MaximumHistory] of TGopherSelector;
     FHistoryCount: integer;
+    FUserAction: TUserAction;
 
-    procedure LoadSelector(const Selector: TGopherSelector);
+    procedure LoadSelector(const Selector: TGopherSelector;
+      const UserAction: TUserAction);
 
     procedure AddHistory(const Selector: TGopherSelector);
     procedure LoadView;
@@ -75,6 +79,7 @@ type
     procedure LoadDirectory;
     procedure LoadImage;
     procedure LoadText;
+    procedure DownloadSelector;
 
   public
     { public declarations }
@@ -202,16 +207,16 @@ procedure TForm1.GopherUriEditChange(Sender: TObject);
 begin
   // try to decode the given gopher URI
   FEditedSelectorValid := ParseGopherURI(Trim(GopherUriEdit.Text), FEditedSelector);
-  BitBtn1.Enabled:=FEditedSelectorValid;
+  BitBtn1.Enabled := FEditedSelectorValid;
 end;
 
-procedure TForm1.GopherUriEditKeyDown(Sender: TObject; var Key: Word;
+procedure TForm1.GopherUriEditKeyDown(Sender: TObject; var Key: word;
   Shift: TShiftState);
 begin
   if FEditedSelectorValid and (Key = VK_RETURN) then
   begin
     AddHistory(FEditedSelector);
-    LoadSelector(FEditedSelector);
+    LoadSelector(FEditedSelector, uaViewSelector);
   end;
 end;
 
@@ -219,8 +224,8 @@ procedure TForm1.BitBtn1Click(Sender: TObject);
 begin
   if FEditedSelectorValid then
   begin
-     AddHistory(FEditedSelector);
-     LoadSelector(FEditedSelector);
+    AddHistory(FEditedSelector);
+    LoadSelector(FEditedSelector, uaViewSelector);
   end;
 end;
 
@@ -233,7 +238,7 @@ begin
   if Selector.SelectorType in [gstPlainText, gstDirectory, gstImage] then
   begin
     AddHistory(Selector);
-    LoadSelector(Selector);
+    LoadSelector(Selector, uaViewSelector);
   end;
 end;
 
@@ -241,10 +246,23 @@ end;
     Download selected Selector to disk...
 }
 procedure TForm1.MenuItem1Click(Sender: TObject);
+var
+  Selector: TGopherSelector;
 begin
-  ShowMessage('Sorry...still to do...');
+  // get selector and load it for download
+  Selector := FSelectorList[ListView1.Selected.Index + 1];
+  if Selector.SelectorType in [gstPlainText, gstImage, gstBinary] then
+  begin
+    AddHistory(Selector);
+    LoadSelector(Selector, uaDownloadSelector);
+  end;
 end;
 
+{
+    Recurring timer tick to download bytes from server.
+    When all bytes are downloaded, the FUserAction variable will be checked
+    to see what to do.
+}
 procedure TForm1.Timer1Timer(Sender: TObject);
 var
   buffer: array[1..ByteBufferSize] of byte;
@@ -260,9 +278,13 @@ begin
   else
   begin
     Timer1.Enabled := False;
+    Label3.Caption := Label3.Caption + ' done.';
     FMemoryStream.Seek(0, soFromBeginning);
     FreeAndNil(FInetSocket);
-    LoadView;
+    case FUserAction of
+      uaViewSelector: LoadView;
+      uaDownloadSelector: DownloadSelector;
+    end;
   end;
 end;
 
@@ -292,7 +314,8 @@ end;
 {
     Start loading the requested selector
 }
-procedure TForm1.LoadSelector(const Selector: TGopherSelector);
+procedure TForm1.LoadSelector(const Selector: TGopherSelector;
+  const UserAction: TUserAction);
 var
   SelectorString: string;
 begin
@@ -307,6 +330,7 @@ begin
   FCurrentReadBytes := 0;
   FCurrentSelector := Selector;
   FMemoryStream := TMemoryStream.Create;
+  FUserAction := UserAction;
   GopherUriEdit.Text := CreateGopherUri(Selector);
 
   // connect to host
@@ -440,11 +464,24 @@ begin
   Memo1.Lines.LoadFromStream(FMemoryStream);
 end;
 
+{
+    "Download" selector
+
+    This function just presents a Save File dialog to store the downloaded
+    bytes in the memory stream.
+}
+procedure TForm1.DownloadSelector;
+begin
+  SaveDialog1.FileName := ExtractFileName(FCurrentSelector.Selector);
+  if SaveDialog1.Execute then
+    FMemoryStream.SaveToFile(SaveDialog1.FileName);
+end;
+
 procedure TForm1.BitBtn2Click(Sender: TObject);
 begin
   // go back in history :)
   Dec(FHistoryCount);
-  LoadSelector(FSelectorHistory[FHistoryCount]);
+  LoadSelector(FSelectorHistory[FHistoryCount], uaViewSelector);
   BitBtn2.Enabled := FHistoryCount > 1;
 end;
 
