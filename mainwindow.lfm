@@ -1,18 +1,18 @@
 object Form1: TForm1
-  Left = 576
+  Left = 432
   Height = 703
-  Top = 127
+  Top = 152
   Width = 915
   Caption = 'Gophon'
   ClientHeight = 703
   ClientWidth = 915
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '1.2.0.3'
+  LCLVersion = '1.2.6.0'
   object GopherUriEdit: TEdit
     AnchorSideRight.Control = BitBtn1
     Left = 0
-    Height = 21
+    Height = 20
     Top = 6
     Width = 759
     Anchors = [akTop, akLeft, akRight]
@@ -74,7 +74,7 @@ object Form1: TForm1
     Left = 0
     Height = 673
     Top = 32
-    Width = 911
+    Width = 915
     Anchors = [akTop, akLeft, akRight, akBottom]
     Columns = <    
       item
@@ -82,7 +82,7 @@ object Form1: TForm1
         Width = 0
       end    
       item
-        Width = 890
+        Width = 894
       end>
     ColumnClick = False
     Font.Height = -15
@@ -99,9 +99,9 @@ object Form1: TForm1
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 668
+    Height = 671
     Top = 32
-    Width = 912
+    Width = 915
     Anchors = [akTop, akLeft, akRight, akBottom]
     Center = True
     Proportional = True
@@ -179,7 +179,7 @@ object Form1: TForm1
     Left = 0
     Height = 672
     Top = 32
-    Width = 914
+    Width = 915
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -15
     Font.Name = 'Monospace'
