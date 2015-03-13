@@ -15,10 +15,17 @@ Oh well...there is a very long todo list... development has just started
 * add gopher search query handling
 * add a menu for settings
 * add bookmarks
+* add some credits window
 * better history handling
 * load/store settings, history
 * implement "Download to computer" functionality
 
 ## BUGS
 Many.... :)
+
+## Icons
+The cool iconset was not created by me, so here are the credits.
+
+Some icons by Yusuke Kamiyamane. Licensed under a Creative Commons Attribution 3.0 License.
+http://p.yusukekamiyamane.com/
 
