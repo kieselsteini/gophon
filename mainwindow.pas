@@ -39,10 +39,7 @@ type
     Memo1: TMemo;
     MenuItem1: TMenuItem;
     PopupMenu1: TPopupMenu;
-    PortEdit: TEdit;
-    HostnameEdit: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
+    GopherUriEdit: TEdit;
     SaveDialog1: TSaveDialog;
     Timer1: TTimer;
     procedure BitBtn1Click(Sender: TObject);
@@ -62,9 +59,9 @@ type
     FSelectorHistory: array[1..MaximumHistory] of TGopherSelector;
     FHistoryCount: integer;
 
-    procedure LoadSelector(Selector: TGopherSelector);
+    procedure LoadSelector(const Selector: TGopherSelector);
 
-    procedure AddHistory(Selector: TGopherSelector);
+    procedure AddHistory(const Selector: TGopherSelector);
     procedure LoadView;
     procedure HideElements;
 
@@ -82,6 +79,79 @@ var
 implementation
 
 {$R *.lfm}
+
+{
+    Parse a given string to a gopher selector
+}
+function ParseGopherURI(const s: string; out Selector: TGopherSelector): boolean;
+const
+  UriStart = 'gopher://';
+var
+  i, l: integer;
+  tmp: ShortString;
+begin
+  // reset selector
+  Selector.Port := 70;
+  Selector.Hostname := '';
+  Selector.Caption := '';
+  Selector.Selector := '/';
+  Selector.SelectorType := gstDirectory;
+  Result := False;
+
+  // check for gopher://
+  if LeftStr(s, Length(UriStart)) = UriStart then
+    i := Length(UriStart) + 1
+  else
+    i := 1;
+  l := Length(s);
+
+  // parse hostname
+  tmp := '';
+  repeat
+    tmp := tmp + s[i];
+    Inc(i);
+    if i > l then
+    begin
+      Selector.Hostname := Trim(tmp);
+      Result := True;
+      Exit;
+    end;
+  until s[i] in [':', '/'];
+  Selector.Hostname := Trim(tmp);
+
+  // parse port
+  if s[i] = ':' then
+  begin
+    tmp := '';
+    Inc(i);
+    if i > l then
+      exit;
+    repeat
+      tmp := tmp + s[i];
+      Inc(i);
+      if i > l then
+      begin
+        Selector.Port := StrToInt(Trim(tmp));
+        Result := True;
+        exit;
+      end;
+    until s[i] = '/';
+    Selector.Port := StrToInt(Trim(tmp));
+  end;
+
+  // "parse" selector
+  Selector.Selector := Trim(RightStr(s, l - i));
+  Selector.Selector := StringReplace(Selector.Selector, '%09', Chr(9), [rfReplaceAll]);
+  if Selector.Selector = '' then
+    Selector.Selector := '/';
+
+  Result := True; // ok now...
+end;
+
+function CreateGopherUri(const Selector: TGopherSelector): string;
+begin
+  Result := 'gopher://' + Selector.Hostname + ':' + IntToStr(Selector.Port) + Selector.Selector;
+end;
 
 { TForm1 }
 
@@ -141,7 +211,7 @@ end;
 {
     History stuff...
 }
-procedure TForm1.AddHistory(Selector: TGopherSelector);
+procedure TForm1.AddHistory(const Selector: TGopherSelector);
 begin
   Inc(FHistoryCount);
   if FHistoryCount > MaximumHistory then
@@ -164,7 +234,7 @@ end;
 {
     Start loading the requested selector
 }
-procedure TForm1.LoadSelector(Selector: TGopherSelector);
+procedure TForm1.LoadSelector(const Selector: TGopherSelector);
 var
   SelectorString: string;
 begin
@@ -179,8 +249,7 @@ begin
   FCurrentReadBytes := 0;
   FCurrentSelector := Selector;
   FMemoryStream := TMemoryStream.Create;
-  HostnameEdit.Text := Selector.Hostname;
-  PortEdit.Text := IntToStr(Selector.Port);
+  GopherUriEdit.Text := CreateGopherUri(Selector);
 
   // connect to host
   SelectorString := Selector.Selector + Chr(13) + Chr(10);
@@ -255,7 +324,7 @@ begin
         if Hostname = '' then
           Hostname := FCurrentSelector.Hostname;
         Port := StrToInt(Parts.Strings[3]);
-        Caption := Trim(RightStr(Parts.Strings[0], Length(Parts.Strings[0]) - 1));
+        Caption := RightStr(Parts.Strings[0], Length(Parts.Strings[0]) - 1);
         if SelectorType = gstUnknown then
           Caption := '[' + LeftStr(Parts.Strings[0], 1) + ']' + Caption;
       end
@@ -317,14 +386,14 @@ procedure TForm1.BitBtn1Click(Sender: TObject);
 var
   Selector: TGopherSelector;
 begin
-  // create dummy selector
-  Selector.SelectorType := gstDirectory;
-  Selector.Selector := '/';
-  Selector.Hostname := Trim(HostnameEdit.Text);
-  Selector.Port := StrToInt(Trim(PortEdit.Text));
-
-  AddHistory(Selector);
-  LoadSelector(Selector);
+  // parse and load selector
+  if ParseGopherURI(Trim(GopherUriEdit.Text), Selector) then
+  begin
+    AddHistory(Selector);
+    LoadSelector(Selector);
+  end
+  else
+    ShowMessage('Error!');
 end;
 
 procedure TForm1.BitBtn2Click(Sender: TObject);

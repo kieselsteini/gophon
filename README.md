@@ -13,7 +13,6 @@ Oh well...there is a very long todo list... development has just started
 * add exception handling ... at the moment the client will just crash :(
 * add loaders / handlers for the remaining selector types
 * add gopher search query handling
-* unify the hostname/port edit things into one URL editbox
 * add a menu for settings
 * add bookmarks
 * better history handling

@@ -9,43 +9,15 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnShow = FormShow
   LCLVersion = '1.2.0.3'
-  object Label1: TLabel
-    Left = 8
-    Height = 15
-    Top = 13
-    Width = 34
-    Caption = 'Host:'
-    ParentColor = False
-  end
-  object HostnameEdit: TEdit
-    AnchorSideRight.Control = Label2
-    Left = 48
+  object GopherUriEdit: TEdit
+    AnchorSideRight.Control = BitBtn1
+    Left = 0
     Height = 21
     Top = 7
-    Width = 577
+    Width = 759
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 0
-    Text = 'gopher.floodgap.com'
-  end
-  object Label2: TLabel
-    AnchorSideRight.Control = PortEdit
-    Left = 625
-    Height = 15
-    Top = 13
-    Width = 30
-    Anchors = [akTop, akRight]
-    Caption = 'Port:'
-    ParentColor = False
-  end
-  object PortEdit: TEdit
-    AnchorSideRight.Control = BitBtn1
-    Left = 655
-    Height = 21
-    Top = 7
-    Width = 104
-    Anchors = [akTop, akRight]
-    TabOrder = 1
-    Text = '70'
+    Text = 'gopher://gopher.floodgap.com'
   end
   object BitBtn1: TBitBtn
     AnchorSideRight.Control = BitBtn2
@@ -92,7 +64,7 @@ object Form1: TForm1
       560080565600805656007C525200794F4F00794F4F00794F4F00
     }
     OnClick = BitBtn1Click
-    TabOrder = 2
+    TabOrder = 1
   end
   object ListView1: TListView
     AnchorSideRight.Side = asrBottom
@@ -118,7 +90,7 @@ object Form1: TForm1
     PopupMenu = PopupMenu1
     ReadOnly = True
     SmallImages = ImageList1
-    TabOrder = 3
+    TabOrder = 2
     OnDblClick = ListView1DblClick
   end
   object Image1: TImage
@@ -178,7 +150,7 @@ object Form1: TForm1
       3600DD923600DD923600DD923600DA8F3400D68B3100D1862D00
     }
     OnClick = BitBtn2Click
-    TabOrder = 4
+    TabOrder = 3
   end
   object Label3: TLabel
     AnchorSideLeft.Side = asrCenter
@@ -215,7 +187,7 @@ object Form1: TForm1
     ParentFont = False
     ReadOnly = True
     ScrollBars = ssBoth
-    TabOrder = 5
+    TabOrder = 4
     WordWrap = False
   end
   object ImageList1: TImageList
