@@ -14,6 +14,8 @@ const
 
   ByteBufferSize = 1024 * 64; // 64kb
 
+  InitialGopherHole = 'gopher://gopher.floodgap.com';
+
 type
   { Gopher stuff }
   TGopherSelectorType = (gstPlainText, gstDirectory,
@@ -193,6 +195,7 @@ begin
   FHistoryCount := 0;
   BitBtn2.Enabled := False;
   HideElements;
+  GopherUriEdit.Text := InitialGopherHole; // should invoke OnChange
 end;
 
 procedure TForm1.GopherUriEditChange(Sender: TObject);
