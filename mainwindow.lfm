@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 538
+  Left = 576
   Height = 703
-  Top = 154
+  Top = 127
   Width = 915
   Caption = 'Gophon'
   ClientHeight = 703
@@ -13,9 +13,10 @@ object Form1: TForm1
     AnchorSideRight.Control = BitBtn1
     Left = 0
     Height = 21
-    Top = 7
+    Top = 6
     Width = 759
     Anchors = [akTop, akLeft, akRight]
+    OnChange = GopherUriEditChange
     TabOrder = 0
     Text = 'gopher://gopher.floodgap.com'
   end
@@ -177,7 +178,7 @@ object Form1: TForm1
     Left = 0
     Height = 672
     Top = 32
-    Width = 913
+    Width = 914
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -15
     Font.Name = 'Monospace'

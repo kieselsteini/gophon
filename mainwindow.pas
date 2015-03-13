@@ -5,7 +5,7 @@ unit mainwindow;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls,
   ComCtrls, Buttons, ExtCtrls, Menus, SSockets, Math;
 
 const
@@ -46,11 +46,14 @@ type
     procedure BitBtn2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure GopherUriEditChange(Sender: TObject);
     procedure ListView1DblClick(Sender: TObject);
     procedure MenuItem1Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
   private
     { private declarations }
+    FEditedSelector: TGopherSelector;
+    FEditedSelectorValid: boolean;
     FCurrentSelector: TGopherSelector;
     FCurrentReadBytes: integer;
     FMemoryStream: TMemoryStream;
@@ -89,6 +92,22 @@ const
 var
   i, l: integer;
   tmp: ShortString;
+
+  // little helper to convert the port
+  function ParsePort: boolean;
+  var
+    port: integer;
+  begin
+    Result := False;
+    if not TryStrToInt(Trim(tmp), port) then
+      Exit;
+    if not (port in [0..65535]) then
+      Exit;
+    // ok..parsed port
+    Selector.Port := port;
+    Result := True;
+  end;
+
 begin
   // reset selector
   Selector.Port := 70;
@@ -104,6 +123,8 @@ begin
   else
     i := 1;
   l := Length(s);
+  if i > l then
+    Exit;
 
   // parse hostname
   tmp := '';
@@ -118,6 +139,8 @@ begin
     end;
   until s[i] in [':', '/'];
   Selector.Hostname := Trim(tmp);
+  if Selector.Hostname = '' then
+    Exit;
 
   // parse port
   if s[i] = ':' then
@@ -129,14 +152,17 @@ begin
     repeat
       tmp := tmp + s[i];
       Inc(i);
+      // check end of string
       if i > l then
       begin
-        Selector.Port := StrToInt(Trim(tmp));
+        if not ParsePort then
+          Exit;
         Result := True;
-        exit;
+        Exit;
       end;
     until s[i] = '/';
-    Selector.Port := StrToInt(Trim(tmp));
+    if not ParsePort then
+      Exit;
   end;
 
   // "parse" selector
@@ -150,7 +176,8 @@ end;
 
 function CreateGopherUri(const Selector: TGopherSelector): string;
 begin
-  Result := 'gopher://' + Selector.Hostname + ':' + IntToStr(Selector.Port) + Selector.Selector;
+  Result := 'gopher://' + Selector.Hostname + ':' + IntToStr(Selector.Port) +
+    Selector.Selector;
 end;
 
 { TForm1 }
@@ -164,6 +191,13 @@ begin
   FHistoryCount := 0;
   BitBtn2.Enabled := False;
   HideElements;
+end;
+
+procedure TForm1.GopherUriEditChange(Sender: TObject);
+begin
+  // try to decode the given gopher URI
+  FEditedSelectorValid := ParseGopherURI(Trim(GopherUriEdit.Text), FEditedSelector);
+  BitBtn1.Enabled:=FEditedSelectorValid;
 end;
 
 procedure TForm1.ListView1DblClick(Sender: TObject);
@@ -383,17 +417,12 @@ begin
 end;
 
 procedure TForm1.BitBtn1Click(Sender: TObject);
-var
-  Selector: TGopherSelector;
 begin
-  // parse and load selector
-  if ParseGopherURI(Trim(GopherUriEdit.Text), Selector) then
+  if FEditedSelectorValid then
   begin
-    AddHistory(Selector);
-    LoadSelector(Selector);
-  end
-  else
-    ShowMessage('Error!');
+     AddHistory(FEditedSelector);
+     LoadSelector(FEditedSelector);
+  end;
 end;
 
 procedure TForm1.BitBtn2Click(Sender: TObject);
