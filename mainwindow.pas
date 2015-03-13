@@ -250,12 +250,12 @@ begin
           'i', '.': SelectorType := gstInfo;
           'I', 'g': SelectorType := gstImage;
         end;
-        Selector := Parts.Strings[1];
-        Hostname := Parts.Strings[2];
+        Selector := Trim(Parts.Strings[1]);
+        Hostname := Trim(Parts.Strings[2]);
         if Hostname = '' then
           Hostname := FCurrentSelector.Hostname;
         Port := StrToInt(Parts.Strings[3]);
-        Caption := RightStr(Parts.Strings[0], Length(Parts.Strings[0]) - 1);
+        Caption := Trim(RightStr(Parts.Strings[0], Length(Parts.Strings[0]) - 1));
         if SelectorType = gstUnknown then
           Caption := '[' + LeftStr(Parts.Strings[0], 1) + ']' + Caption;
       end
@@ -320,8 +320,8 @@ begin
   // create dummy selector
   Selector.SelectorType := gstDirectory;
   Selector.Selector := '/';
-  Selector.Hostname := HostnameEdit.Text;
-  Selector.Port := StrToInt(PortEdit.Text);
+  Selector.Hostname := Trim(HostnameEdit.Text);
+  Selector.Port := StrToInt(Trim(PortEdit.Text));
 
   AddHistory(Selector);
   LoadSelector(Selector);

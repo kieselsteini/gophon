@@ -1,26 +1,26 @@
 object Form1: TForm1
-  Left = 632
+  Left = 538
   Height = 703
-  Top = 157
+  Top = 154
   Width = 915
   Caption = 'Gophon'
   ClientHeight = 703
   ClientWidth = 915
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '1.2.6.0'
+  LCLVersion = '1.2.0.3'
   object Label1: TLabel
     Left = 8
-    Height = 14
+    Height = 15
     Top = 13
-    Width = 33
+    Width = 34
     Caption = 'Host:'
     ParentColor = False
   end
   object HostnameEdit: TEdit
     AnchorSideRight.Control = Label2
     Left = 48
-    Height = 20
+    Height = 21
     Top = 7
     Width = 577
     Anchors = [akTop, akLeft, akRight]
@@ -30,7 +30,7 @@ object Form1: TForm1
   object Label2: TLabel
     AnchorSideRight.Control = PortEdit
     Left = 625
-    Height = 14
+    Height = 15
     Top = 13
     Width = 30
     Anchors = [akTop, akRight]
@@ -40,7 +40,7 @@ object Form1: TForm1
   object PortEdit: TEdit
     AnchorSideRight.Control = BitBtn1
     Left = 655
-    Height = 20
+    Height = 21
     Top = 7
     Width = 104
     Anchors = [akTop, akRight]
