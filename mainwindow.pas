@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls,
-  ComCtrls, Buttons, ExtCtrls, Menus, SSockets, Math;
+  ComCtrls, Buttons, ExtCtrls, Menus, SSockets, Math, LCLType;
 
 const
   MaximumSelectors = 4096;
@@ -47,6 +47,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure GopherUriEditChange(Sender: TObject);
+    procedure GopherUriEditKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure ListView1DblClick(Sender: TObject);
     procedure MenuItem1Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
@@ -198,6 +200,25 @@ begin
   // try to decode the given gopher URI
   FEditedSelectorValid := ParseGopherURI(Trim(GopherUriEdit.Text), FEditedSelector);
   BitBtn1.Enabled:=FEditedSelectorValid;
+end;
+
+procedure TForm1.GopherUriEditKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if FEditedSelectorValid and (Key = VK_RETURN) then
+  begin
+    AddHistory(FEditedSelector);
+    LoadSelector(FEditedSelector);
+  end;
+end;
+
+procedure TForm1.BitBtn1Click(Sender: TObject);
+begin
+  if FEditedSelectorValid then
+  begin
+     AddHistory(FEditedSelector);
+     LoadSelector(FEditedSelector);
+  end;
 end;
 
 procedure TForm1.ListView1DblClick(Sender: TObject);
@@ -414,15 +435,6 @@ begin
   HideElements;
   Memo1.Visible := True;
   Memo1.Lines.LoadFromStream(FMemoryStream);
-end;
-
-procedure TForm1.BitBtn1Click(Sender: TObject);
-begin
-  if FEditedSelectorValid then
-  begin
-     AddHistory(FEditedSelector);
-     LoadSelector(FEditedSelector);
-  end;
 end;
 
 procedure TForm1.BitBtn2Click(Sender: TObject);

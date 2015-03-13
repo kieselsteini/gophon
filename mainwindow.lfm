@@ -17,6 +17,7 @@ object Form1: TForm1
     Width = 759
     Anchors = [akTop, akLeft, akRight]
     OnChange = GopherUriEditChange
+    OnKeyDown = GopherUriEditKeyDown
     TabOrder = 0
     Text = 'gopher://gopher.floodgap.com'
   end
