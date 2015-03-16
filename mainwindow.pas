@@ -423,9 +423,8 @@ begin
   for i := 1 to items do
     with ListView1.Items.Add do
     begin
-      Caption := '';
+      Caption := FSelectorList[i].Caption;
       ImageIndex := -1;
-      SubItems.Add(FSelectorList[i].Caption);
 
       case FSelectorList[i].SelectorType of
         gstInfo: ImageIndex := -1;

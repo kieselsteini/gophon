@@ -3,7 +3,7 @@
   <ProjectSession>
     <Version Value="9"/>
     <BuildModes Active="Default"/>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="gophon.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -20,8 +20,8 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="218"/>
-        <CursorPos X="42" Y="239"/>
+        <TopLine Value="419"/>
+        <CursorPos X="1" Y="428"/>
         <UsageCount Value="28"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -40,6 +40,14 @@
         <CursorPos X="10" Y="113"/>
         <UsageCount Value="10"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="../../tmp/fpc-2.6.4/ide/fpdesk.pas"/>
+        <UnitName Value="FPDesk"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="82" Y="18"/>
+        <UsageCount Value="10"/>
+      </Unit4>
     </Units>
     <General>
       <ActiveWindowIndexAtStart Value="0"/>
